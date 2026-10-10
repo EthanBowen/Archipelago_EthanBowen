@@ -8,7 +8,7 @@ from Options import Choice, OptionGroup, PerGameCommonOptions, Range, Toggle
 # Options will be in the game's template yaml.
 # They will be represented by checkboxes, sliders etc. on the game's options page on the website.
 # (Note: Options can also be made invisible from either of these places by overriding Option.visibility.
-#  APQuest doesn't have an example of this, but this can be used for secret / hidden / advanced options.)
+#  WormingFromHome doesn't have an example of this, but this can be used for secret / hidden / advanced options.)
 
 # For further reading on options, you can also read the Options API Document:
 # https://github.com/ArchipelagoMW/Archipelago/blob/main/docs/options%20api.md
@@ -107,7 +107,7 @@ class PlayerSprite(Choice):
 # We must now define a dataclass inheriting from PerGameCommonOptions that we put all our options in.
 # This is in the format "option_name_in_snake_case: OptionClassName".
 @dataclass
-class APQuestOptions(PerGameCommonOptions):
+class WormingFromHomeOptions(PerGameCommonOptions):
     hard_mode: HardMode
     hammer: Hammer
     extra_starting_chest: ExtraStartingChest

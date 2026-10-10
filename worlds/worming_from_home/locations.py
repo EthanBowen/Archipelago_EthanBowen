@@ -7,27 +7,93 @@ from BaseClasses import ItemClassification, Location
 from . import items
 
 if TYPE_CHECKING:
-    from .world import APQuestWorld
+    from .world import WormingFromHomeWorld
 
 # Every location must have a unique integer ID associated with it.
 # We will have a lookup from location name to ID here that, in world.py, we will import and bind to the world class.
 # Even if a location doesn't exist on specific options, it must be present in this lookup.
 LOCATION_NAME_TO_ID = {
-    "Top Left Room Chest": 1,
-    "Top Middle Chest": 2,
-    "Bottom Left Chest": 3,
-    "Bottom Left Extra Chest": 4,
-    "Bottom Right Room Left Chest": 5,
-    "Bottom Right Room Right Chest": 6,
-    # Location IDs don't need to be sequential, as long as they're unique and greater than 0.
-    "Right Room Enemy Drop": 10,
-}
+    "Shop: Reading Nook": 1,
+    "Shop: Worm Weights": 2,
+    "Shop: Smartphone Charger": 3,
+    "Shop: Stabilized Mouse": 4,
+    "Shop: Slim Keyboard": 5,
+    "Shop: L-Desk": 6,
+    "Shop: Comfy Reading Nook": 7,
+    "Shop: Worm Barbell": 8,
+    "Shop: Monitor Extension": 9,
+    "Shop: Cozy Reading Nook": 10,
+    "Shop: Worm Squat Machine": 11,
+    "Shop: Touch Keyboard": 12,
+    "Shop: Wormgonomic Mouse": 13,
+    "Shop: Water Cooler": 14,
+    "Shop: Newton's Cradle": 15,
+    "Shop: Coffee Machine": 16,
+    "Shop: Printer": 17,
+    "Shop: Cup of Pens": 18,
+    "Shop: Worm Trampoline": 19,
+    "Shop: Pile of Dirt": 20,
+    "Shop: Webcam": 21,
+    "Shop: Soundboard": 22,
+    "Shop: Kevin": 23,
 
+    # Interns
+    "Shop: Intern 1": 101,
+    "Shop: Intern 2": 102,
+    "Shop: Intern 3": 103,
+    "Shop: Intern 4": 104,
+    "Shop: Intern 5": 105,
+    "Shop: Intern 6": 106,
+    "Shop: Intern 7": 107,
+    "Shop: Intern 8": 108,
+    "Shop: Intern 9": 109,
+    "Shop: Intern 10": 110,
+    "Shop: Intern 11": 111,
+    "Shop: Intern 12": 112,
+    "Shop: Intern 13": 113,
+    "Shop: Intern 14": 114,
+    "Shop: Intern 15": 115,
+    "Shop: Intern 16": 116,
+    "Shop: Intern 17": 117,
+    "Shop: Intern 18": 118,
+    "Shop: Intern 19": 119,
+    "Shop: Intern 20": 120,
+    "Shop: Intern 21": 121,
+    "Shop: Intern 22": 122,
+    "Shop: Intern 23": 123,
+    "Shop: Intern 24": 124,
+    "Shop: Intern 25": 125,
+    "Shop: Intern 26": 126,
+    "Shop: Intern 27": 127,
+    "Shop: Intern 28": 128,
+    "Shop: Intern 29": 129,
+    "Shop: Intern 30": 130,
+    "Shop: Intern 31": 131,
+    "Shop: Intern 32": 132,
+    "Shop: Intern 33": 133,
+    "Shop: Intern 34": 134,
+    "Shop: Intern 35": 135,
+    "Shop: Intern 36": 136,
+    "Shop: Intern 37": 137,
+    "Shop: Intern 38": 138,
+    "Shop: Intern 39": 139,
+    "Shop: Intern 40": 140,
+    "Shop: Intern 41": 141,
+    "Shop: Intern 42": 142,
+    "Shop: Intern 43": 143,
+    "Shop: Intern 44": 144,
+    "Shop: Intern 45": 145,
+    "Shop: Intern 46": 146,
+    "Shop: Intern 47": 147,
+    "Shop: Intern 48": 148,
+    "Shop: Intern 49": 149,
+    "Shop: Intern 50": 150,
+}
 
 # Each Location instance must correctly report the "game" it belongs to.
 # To make this simple, it is common practice to subclass the basic Location class and override the "game" field.
-class APQuestLocation(Location):
-    game = "APQuest"
+class WormingFromHomeLocation(Location):
+    game = "Worming from Home"
 
 
 # Let's make one more helper method before we begin actually creating locations.
@@ -40,21 +106,22 @@ def get_location_names_with_ids(location_names: list[str]) -> dict[str, int | No
     return {location_name: LOCATION_NAME_TO_ID[location_name] for location_name in location_names}
 
 
-def create_all_locations(world: APQuestWorld) -> None:
+def create_all_locations(world: WormingFromHomeWorld) -> None:
     create_regular_locations(world)
     create_events(world)
 
 
-def create_regular_locations(world: APQuestWorld) -> None:
+def create_regular_locations(world: WormingFromHomeWorld) -> None:
     # Finally, we need to put the Locations ("checks") into their regions.
     # Once again, before we do anything, we can grab our regions we created by using world.get_region()
     overworld = world.get_region("Overworld")
-    top_left_room = world.get_region("Top Left Room")
-    bottom_right_room = world.get_region("Bottom Right Room")
-    right_room = world.get_region("Right Room")
+    shop_tier_1 = world.get_region("Shop Tier 1")
+    shop_tier_2 = world.get_region("Shop Tier 2")
+    shop_tier_3 = world.get_region("Shop Tier 3")
+    final_boss_room = world.get_region("Final Boss Room")
 
     # One way to create locations is by just creating them directly via their constructor.
-    bottom_left_chest = APQuestLocation(
+    bottom_left_chest = WormingFromHomeLocation(
         world.player, "Bottom Left Chest", world.location_name_to_id["Bottom Left Chest"], overworld
     )
 
@@ -65,72 +132,45 @@ def create_regular_locations(world: APQuestWorld) -> None:
     # For this, you need to have a dict of location names to their IDs (i.e. a subset of location_name_to_id)
     # Aha! So that's why we made that "get_location_names_with_ids" helper method earlier.
     # You also need to pass your overridden Location class.
-    bottom_right_room_locations = get_location_names_with_ids(
-        ["Bottom Right Room Left Chest", "Bottom Right Room Right Chest"]
+    shop_tier_1_locations = get_location_names_with_ids(
+        ["Shop: Reading Nook", "Shop: Worm Weights", "Shop: Smartphone Charger", 
+        "Shop: Stabilized Mouse", "Shop: Thin Keyboard", "Shop: L-Desk", 
+        "Shop: Water Cooler", "Shop: Newton's Cradle"]
     )
-    bottom_right_room.add_locations(bottom_right_room_locations, APQuestLocation)
+    shop_tier_1.add_locations(shop_tier_1_locations, WormingFromHomeLocation)
 
-    top_left_room_locations = get_location_names_with_ids(["Top Left Room Chest"])
-    top_left_room.add_locations(top_left_room_locations, APQuestLocation)
+    shop_tier_2_locations = get_location_names_with_ids(
+        ["Shop: Comfy Reading Nook", "Shop: Worm Barbell", "Shop: Coffee Machine", 
+        "Shop: Printer", "Shop: Cup of Pens"]
+    )
+    shop_tier_2.add_locations(shop_tier_2_locations, WormingFromHomeLocation)
 
-    right_room_locations = get_location_names_with_ids(["Right Room Enemy Drop"])
-    right_room.add_locations(right_room_locations, APQuestLocation)
-
-    # Locations may be in different regions depending on the player's options.
-    # In our case, the hammer option puts the Top Middle Chest into its own room called Top Middle Room.
-    top_middle_room_locations = get_location_names_with_ids(["Top Middle Chest"])
-    if world.options.hammer:
-        top_middle_room = world.get_region("Top Middle Room")
-        top_middle_room.add_locations(top_middle_room_locations, APQuestLocation)
-    else:
-        overworld.add_locations(top_middle_room_locations, APQuestLocation)
-
-    # Locations may exist only if the player enables certain options.
-    # In our case, the extra_starting_chest option adds the Bottom Left Extra Chest location.
-    if world.options.extra_starting_chest:
-        # Once again, it is important to stress that even though the Bottom Left Extra Chest location doesn't always
-        # exist, it must still always be present in the world's location_name_to_id.
-        # Whether the location actually exists in the seed is purely determined by whether we create and add it here.
-        bottom_left_extra_chest = get_location_names_with_ids(["Bottom Left Extra Chest"])
-        overworld.add_locations(bottom_left_extra_chest, APQuestLocation)
+    shop_tier_3_locations = get_location_names_with_ids(
+        ["Shop: Monitor Extension", "Shop: Cozy Reading Nook", "Shop: Worm Squat Machine",
+        "Shop: Touch Keyboard", "Shop: Wormgonomic Mouse", "Shop: Worm Trampoline", 
+        "Shop: Pile of Dirt", "Shop: Webcam", "Shop: Soundboard", "Shop: Kevin"]
+    )
+    shop_tier_3.add_locations(shop_tier_3_locations, WormingFromHomeLocation)
 
 
-def create_events(world: APQuestWorld) -> None:
-    # Sometimes, the player may perform in-game actions that allow them to progress which are not related to Items.
-    # In our case, the player must press a button in the top left room to open the final boss door.
-    # AP has something for this purpose: "Event locations" and "Event items".
-    # An event location is no different than a regular location, except it has the address "None".
-    # It is treated during generation like any other location, but then it is discarded.
-    # This location cannot be "sent" and its item cannot be "received", but the item can be used in logic rules.
-    # Since we are creating more locations and adding them to regions, we need to grab those regions again first.
-    top_left_room = world.get_region("Top Left Room")
-    final_boss_room = world.get_region("Final Boss Room")
+def create_events(world: WormingFromHomeWorld) -> None:
+    
+    # Document signed event
+    shop_tier_2 = world.get_region("Shop Tier 2")
 
     # One way to create an event is simply to use one of the normal methods of creating a location.
-    button_in_top_left_room = APQuestLocation(world.player, "Top Left Room Button", None, top_left_room)
-    top_left_room.locations.append(button_in_top_left_room)
+    sign_soul_away_location = WormingFromHomeLocation(world.player, "Event: Sign Contract", None, shop_tier_2)
+    shop_tier_2.locations.append(sign_soul_away_location)
 
-    # We then need to put an event item onto the location.
-    # An event item is an item whose code is "None" (same as the event location's address),
-    # and whose classification is "progression". Item creation will be discussed more in items.py.
-    # Note: Usually, items are created in world.create_items(), which for us happens in items.py.
-    # However, when the location of an item is known ahead of time (as is the case with an event location/item pair),
-    # it is common practice to create the item when creating the location.
-    # Since locations also have to be finalized after world.create_regions(), which runs before world.create_items(),
-    # we'll create both the event location and the event item in our locations.py code.
-    button_item = items.APQuestItem("Top Left Room Button Pressed", ItemClassification.progression, None, world.player)
-    button_in_top_left_room.place_locked_item(button_item)
+    # create event item for signing away soul and assign it to the event location
+    sign_soul_away_item = items.WormingFromHomeItem("Signed Contract", ItemClassification.progression, None, world.player)
+    sign_soul_away_location.place_locked_item(sign_soul_away_item)
 
-    # A way simpler way to do create an event location/item pair is by using the region.create_event helper.
-    # Luckily, we have another event we want to create: The Victory event.
-    # We will use this event to track whether the player can win the game.
-    # The Victory event is a completely optional abstraction - This will be discussed more in set_rules().
+
+    # Create Interview Success event
+    final_boss_room = world.get_region("Final Boss Room")
+
     final_boss_room.add_event(
-        "Final Boss Defeated", "Victory", location_type=APQuestLocation, item_type=items.APQuestItem
+        "Event: Interview Succeeded", "Victory", location_type=WormingFromHomeLocation, item_type=items.WormingFromHomeItem
     )
 
-    # If you create all your regions and locations line-by-line like this,
-    # the length of your create_regions might get out of hand.
-    # Many worlds use more data-driven approaches using dataclasses or NamedTuples.
-    # However, it is worth understanding how the actual creation of regions and locations works,
-    # That way, we're not just mindlessly copy-pasting! :)

@@ -110,12 +110,39 @@ def create_all_items(world: WormingFromHomeWorld) -> None:
     # First, we create a list containing all the items that always exist.
 
     itempool: list[Item] = [
-        world.create_item("Key"),
-        world.create_item("Sword"),
-        world.create_item("Shield"),
-        world.create_item("Health Upgrade"),
-        world.create_item("Health Upgrade"),
+        world.create_item("Progressive Mouse Upgrade"),
+        world.create_item("Progressive Mouse Upgrade"),
+
+        world.create_item("Progressive Keyboard Upgrade"),
+        world.create_item("Progressive Keyboard Upgrade"),
+
+        world.create_item("Progressive Booknook Upgrade"),
+        world.create_item("Progressive Booknook Upgrade"),
+        world.create_item("Progressive Booknook Upgrade"),
+
+        world.create_item("Progressive Weights Upgrade"),
+        world.create_item("Progressive Weights Upgrade"),
+        world.create_item("Progressive Weights Upgrade"),
+
+        world.create_item("Smartphone Charger"),
+        world.create_item("L-Desk"),
+        world.create_item("Monitor Extension"),
+        world.create_item("Water Cooler"),
+        world.create_item("Newton's Cradle"),
+        world.create_item("Coffee Machine"),
+        world.create_item("Printer"),
+        world.create_item("Cup of Pens"),
+        world.create_item("Worm Trampoline"),
+        world.create_item("Pile of Dirt"),
+        world.create_item("Webcam"),
+        world.create_item("Soundboard"),
+        world.create_item("Kevin"),
     ]
+
+    # add all 50 interns to the itempool, since they are all useful but not progression items
+    for i in range(50):
+        itempool.append(world.create_item("Progressive Interns"))
+
 
     # Some items may only exist if the player enables certain options.
     # In our case, If the hammer option is enabled, the sixth item is the Hammer.
@@ -128,19 +155,7 @@ def create_all_items(world: WormingFromHomeWorld) -> None:
 
     # Archipelago requires that each world submits as many locations as it submits items.
     # This is where we can use our filler and trap items.
-    # WormingFromHome has two of these: The Confetti Cannon and the Math Trap.
-    # (Unfortunately, Archipelago is a bit ambiguous about its terminology here:
-    #  "filler" is an ItemClassification separate from "trap", but in a lot of its functions,
-    #  Archipelago will use "filler" to just mean "an additional item created to fill out the itempool".
-    #  "Filler" in this sense can technically have any ItemClassification,
-    #  but most commonly ItemClassification.filler or ItemClassification.trap.
-    #  Starting here, the word "filler" will be used to collectively refer to WormingFromHome's Confetti Cannon and Math Trap,
-    #  which are ItemClassification.filler and ItemClassification.trap respectively.)
-    # Creating filler items works the same as any other item. But there is a question:
-    # How many filler items do we actually need to create?
-    # In regions.py, we created either six or seven locations depending on the "extra_starting_chest" option.
-    # In this function, we have created five or six items depending on whether the "hammer" option is enabled.
-    # We *could* have a really complicated if-else tree checking the options again, but there is a better way.
+    
     # We can compare the size of our itempool so far to the number of locations in our world.
 
     # The length of our itempool is easy to determine, since we have it as a list.
@@ -188,7 +203,7 @@ def create_all_items(world: WormingFromHomeWorld) -> None:
     # They will be sent as soon as they connect for the first time (depending on your client's item handling flag).
     # Players can add precollected items themselves via the generic "start_inventory" option.
     # If you want to add your own precollected items, you can do so via world.push_precollected().
-    if world.options.start_with_one_confetti_cannon:
+    i#f world.options.start_with_one_confetti_cannon:
         # We're adding a filler item, but you can also add progression items to the player's precollected inventory.
-        starting_confetti_cannon = world.create_item("Confetti Cannon")
-        world.push_precollected(starting_confetti_cannon)
+        #starting_confetti_cannon = world.create_item("Confetti Cannon")
+        #world.push_precollected(starting_confetti_cannon)

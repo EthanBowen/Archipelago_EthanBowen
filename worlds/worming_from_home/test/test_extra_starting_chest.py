@@ -1,9 +1,9 @@
-from .bases import APQuestTestBase
+from .bases import WormingFromHomeTestBase
 
 
 # Sometimes, you might want to test something with a specific option disabled, then with it enabled.
 # For this purpose, we'll just have two different TestCase classes.
-class TestExtraStartingChestOff(APQuestTestBase):
+class TestExtraStartingChestOff(WormingFromHomeTestBase):
     options = {
         "extra_starting_chest": False,
     }
@@ -21,7 +21,7 @@ class TestExtraStartingChestOff(APQuestTestBase):
         self.assertRaises(KeyError, self.world.get_location, "Bottom Left Extra Chest")
 
 
-class TestExtraStartingChestOn(APQuestTestBase):
+class TestExtraStartingChestOn(WormingFromHomeTestBase):
     options = {
         "extra_starting_chest": True,
     }

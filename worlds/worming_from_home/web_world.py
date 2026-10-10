@@ -5,10 +5,10 @@ from .options import option_groups, option_presets
 
 
 # For our game to display correctly on the website, we need to define a WebWorld subclass.
-class APQuestWebWorld(WebWorld):
+class WormingFromHomeWebWorld(WebWorld):
     # We need to override the "game" field of the WebWorld superclass.
     # This must be the same string as the regular World class.
-    game = "APQuest"
+    game = "WormingFromHome"
 
     # Your game pages will have a visual theme (affecting e.g. the background image).
     # You can choose between dirt, grass, grassFlowers, ice, jungle, ocean, partyTime, and stone.
@@ -22,7 +22,7 @@ class APQuestWebWorld(WebWorld):
     # The "link" parameter is unused, but we still need to provide it.
     setup_en = Tutorial(
         "Multiworld Setup Guide",
-        "A guide to setting up APQuest for MultiWorld.",
+        "A guide to setting up WormingFromHome for MultiWorld.",
         "English",
         "setup_en.md",
         "setup/en",
@@ -34,7 +34,7 @@ class APQuestWebWorld(WebWorld):
     # This lets it display the tutorials more compactly.
     setup_de = Tutorial(
         "Multiworld Setup Guide",
-        "A guide to setting up APQuest for MultiWorld.",
+        "A guide to setting up WormingFromHome for MultiWorld.",
         "German",
         "setup_de.md",
         "setup/de",

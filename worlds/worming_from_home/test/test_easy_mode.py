@@ -1,9 +1,9 @@
-from .bases import APQuestTestBase
+from .bases import WormingFromHomeTestBase
 
 
 # When writing a test, you'll first need to subclass unittest.TestCase.
-# In our case, we'll subclass the APQuestTestBase we defined in bases.py.
-class TestEasyModeLogic(APQuestTestBase):
+# In our case, we'll subclass the WormingFromHomeTestBase we defined in bases.py.
+class TestEasyModeLogic(WormingFromHomeTestBase):
     # Our test base is a subclass of WorldTestBase.
     # WorldTestBase takes a dict of options and sets up a multiworld for you with a single world of your game.
     # The world will have the options you specified.
@@ -12,7 +12,7 @@ class TestEasyModeLogic(APQuestTestBase):
         # Options you don't specify will use their default values.
         # It is good practice to specify every option that has an impact on your test, even when it's the default value.
         # As such, we'll spell out that hard_mode is meant to be False.
-        # All other options in APQuest are cosmetic, so we don't need to list them.
+        # All other options in WormingFromHome are cosmetic, so we don't need to list them.
     }
 
     # At this point, we could stop, and a few default tests would be run on our world.
@@ -62,7 +62,7 @@ class TestEasyModeLogic(APQuestTestBase):
                     "Bottom Right Room Right Chest",
                     "Bottom Right Room Left Chest",
                     "Right Room Enemy Drop",
-                    "Final Boss Defeated",  # Reminder: APQuest's victory condition uses this event location
+                    "Final Boss Defeated",  # Reminder: WormingFromHome's victory condition uses this event location
                 ],
                 [["Sword"]],
             )

@@ -1,7 +1,7 @@
-from .bases import APQuestTestBase
+from .bases import WormingFromHomeTestBase
 
 
-class TestHardMode(APQuestTestBase):
+class TestHardMode(WormingFromHomeTestBase):
     options = {
         "hard_mode": True,
     }
@@ -80,7 +80,7 @@ class TestHardMode(APQuestTestBase):
         # But if you really want to know why:
 
         # Having multiple elements in the inner lists is something that only comes up in more complex scenarios.
-        # APQuest doesn't have any of these scenarios, but let's imagine one for completeness' sake.
+        # WormingFromHome doesn't have any of these scenarios, but let's imagine one for completeness' sake.
         # Currently, the Enemy can be beaten with these item combinations:
         # 1. Sword and Shield
         # 2. Sword and Health Upgrade

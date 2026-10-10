@@ -8,12 +8,12 @@ from rule_builder.rules import Has, HasAll, Rule
 from .options import HardMode
 
 if TYPE_CHECKING:
-    from .world import APQuestWorld
+    from .world import WormingFromHomeWorld
 
 HAS_KEY = Has("Key")  # Hmm, what could this be? A little foreshadowing perhaps? :) You'll find out if you keep reading!
 
 
-def set_all_rules(world: APQuestWorld) -> None:
+def set_all_rules(world: WormingFromHomeWorld) -> None:
     # In order for AP to generate an item layout that is actually possible for the player to complete,
     # we need to define rules for our Entrances and Locations.
     # Note: Regions do not have rules, the Entrances connecting them do!
@@ -24,54 +24,35 @@ def set_all_rules(world: APQuestWorld) -> None:
     set_completion_condition(world)
 
 
-def set_all_entrance_rules(world: APQuestWorld) -> None:
-    # First, we need to actually grab our entrances. Luckily, there is a helper method for this.
-    overworld_to_bottom_right_room = world.get_entrance("Overworld to Bottom Right Room")
-    overworld_to_top_left_room = world.get_entrance("Overworld to Top Left Room")
-    right_room_to_final_boss_room = world.get_entrance("Right Room to Final Boss Room")
+def set_all_entrance_rules(world: WormingFromHomeWorld) -> None:
 
-    # Now, let's make some rules!
-    # First, let's handle the transition from the overworld to the bottom right room,
-    # which requires slashing a bush with the Sword.
-    # For this, we need a rule that says "player has a Sword".
-    # We can use a "Has"-type rule from the rule_builder module for this.
-    can_destroy_bush = Has("Sword")
+    # Grab entrances
+    overworld_to_shop_tier_1 = world.get_entrance("Overworld to Shop Tier 1")
+    shop_tier_1_to_shop_tier_2 = world.get_entrance("Shop Tier 1 to Shop Tier 2")
+    shop_tier_2_to_shop_tier_3 = world.get_entrance("Shop Tier 2 to Shop Tier 3")
+    shop_tier_3_to_final_boss_room = world.get_entrance("Shop Tier 3 to Final Boss Room")
 
-    # Now we can set our "can_destroy_bush" rule to the entrance which requires slashing a bush to clear the path.
-    # The easiest way to do this is by calling world.set_rule, which works for both Locations and Entrances.
-    world.set_rule(overworld_to_bottom_right_room, can_destroy_bush)
+    # Set up entrance rules
+    #   world.set_rule(overworld_to_top_left_room, lambda state: state.has("Key", world.player))
 
-    # Conditions can also depend on event items.
-    button_pressed = Has("Top Left Room Button Pressed")
-    world.set_rule(right_room_to_final_boss_room, button_pressed)
+    # Player must have L-Desk to advance pass phase 1
+    ready_for_printer = Has("L-Desk")
+    world.set_rule(shop_tier_1_to_shop_tier_2, ready_for_printer)
 
-    # Some entrance rules may only apply if the player enabled certain options.
-    # In our case, if the hammer option is enabled, we need to add the Hammer requirement to the Entrance from
-    # Overworld to the Top Middle Room.
-    if world.options.hammer:
-        overworld_to_top_middle_room = world.get_entrance("Overworld to Top Middle Room")
-        can_smash_brick = Has("Hammer")
-        world.set_rule(overworld_to_top_middle_room, can_smash_brick)
+    # End game opens up after signing contract
+    ready_for_interview_prep = Has("Signed Soul Away")
+    world.set_rule(shop_tier_2_to_shop_tier_3, ready_for_interview_prep)
 
-    # So far, we've been using "Has" from the Rule Builder to make our rules.
-    # There is another way to make rules that you will see in a lot of older worlds.
-    # A rule can just be a function that takes a "state" argument and returns a bool.
-    # As a demonstration of what that looks like, let's do it with our final Entrance rule:
-    world.set_rule(overworld_to_top_left_room, lambda state: state.has("Key", world.player))
-    # This style is not really recommended anymore, though.
-    # Notice how you have to explicitly capture world.player here so that the rule applies to the correct player?
-    # Well, Rule Builder does this part for you, inside of world.set_rule.
-    # This doesn't just result in shorter code, it also means you can define rules statically (at the module level).
-    # APQuest opts to create its Rule objects locally, but just to show what this would look like,
-    # we'll re-set the "Overworld to Top Left Room" rule to a constant defined at the top of this file:
-    world.set_rule(overworld_to_top_left_room, HAS_KEY)
+    # Game can be finished after signing contract and having webcam, soundboard, and worm trampoline
+    ready_for_interview = HasAll("Signed Soul Away", "Webcam", "Soundboard", "Worm Trampoline")
+    world.set_rule(shop_tier_3_to_final_boss_room, ready_for_interview)
 
-    # Beyond these structural advantages,
+
     # Rule Builder also allows the core AP code to do a lot of under-the-hood optimizations.
     # Rule Builder is quite comprehensive, and even if you have really esoteric rules,
     # you can make custom rules by subclassing CustomRule.
 
-def set_all_location_rules(world: APQuestWorld) -> None:
+def set_all_location_rules(world: WormingFromHomeWorld) -> None:
     # Location rules work no differently from Entrance rules.
     # Most of our locations are chests that can simply be opened by walking up to them.
     # Thus, their logical requirements are covered by the Entrance rules of the Entrances that were required to
@@ -87,32 +68,14 @@ def set_all_location_rules(world: APQuestWorld) -> None:
     # In our case, the enemy in the right room has more health if hard mode is selected,
     # so ontop of the Sword, the player will either need one more health or a Shield in hard mode.
     # First, let's make our sword condition.
-    can_defeat_basic_enemy: Rule = Has("Sword")
+    can_sign_contract: Rule = HasAll("Printer", "Cup of Pens")
 
-    # Next, we'll check whether hard mode has been chosen in the player options.
-    if world.options.hard_mode:
-        # We'll make the condition for "Has a Shield or a Health Upgrade".
-        # We can chain two "Has" conditions together with the | operator to make "Has Shield or has Health Upgrade".
-        can_withstand_a_hit = Has("Shield") | Has("Health Upgrade")
-
-        # Now, we chain this rule to our Sword rule.
-        # Since we want both conditions to be true, in this case, we have to chain them in an "and" way.
-        # For this, we can use the & operator.
-        can_defeat_basic_enemy = can_defeat_basic_enemy & can_withstand_a_hit
-
-    # Finally, we set our rule onto the Right Room Eney Drop location.
-    right_room_enemy = world.get_location("Right Room Enemy Drop")
-    world.set_rule(right_room_enemy, can_defeat_basic_enemy)
-
-    # For the final boss, we also need to chain multiple conditions.
-    # First of all, you always need a Sword and a Shield.
-    # So far, we used the | and & operators to chain "Has" rules.
-    # Instead, we can also use HasAny for an or-chain of items, or HasAll for an and-chain of items.
-    has_sword_and_shield: Rule = HasAll("Sword", "Shield")
+    sign_away_soul = world.get_location("Event: Sign Contract")
+    world.set_rule(sign_away_soul, can_sign_contract)
 
     # In hard mode, the player also needs both Health Upgrades to survive long enough to defeat the boss.
     # For this, we can use the optional "count" parameter for "Has".
-    has_both_health_upgrades = Has("Health Upgrade", count=2)
+    has_interview_materials = HasAll("Webcam", "Soundboard", "Worm Trampoline")
 
     # Previously, we used an "if world.options.hard_mode" condition to check if we should apply the extra requirement.
     # However, if you're comfortable with boolean logic, there is another way.
@@ -120,17 +83,14 @@ def set_all_location_rules(world: APQuestWorld) -> None:
     # rules, it acts like True if the option has the specified value, and acts like False otherwise.
     hard_mode_is_off = OptionFilter(HardMode, False)
 
-    # So with this option-checking rule component in hand, we can write our boss condition like this:
-    can_defeat_final_boss = has_sword_and_shield & (hard_mode_is_off | has_both_health_upgrades)
-    # If you're not as comfortable with boolean logic, it might be somewhat confusing why this is correct.
-    # There is nothing wrong with using "if" conditions to check for options, if you find that easier to understand.
-
-    # Finally, we apply the rule to our "Final Boss Defeated" event location.
-    final_boss = world.get_location("Final Boss Defeated")
-    world.set_rule(final_boss, can_defeat_final_boss)
+    can_successfully_interview = has_interview_materials
+    
+    # Promotion aquired win condition
+    interview_succeeded = world.get_location("Event: Interview Succeeded")
+    world.set_rule(interview_succeeded, can_successfully_interview)
 
 
-def set_completion_condition(world: APQuestWorld) -> None:
+def set_completion_condition(world: WormingFromHomeWorld) -> None:
     # Finally, we need to set a completion condition for our world, defining what the player needs to win the game.
     # For this, we can use world.set_completion_rule.
     # You can just set a completion condition directly like any other condition, referencing items the player receives:
@@ -142,11 +102,11 @@ def set_completion_condition(world: APQuestWorld) -> None:
 
 
 # One final comment about rules:
-# If your world exclusively uses Rule Builder rules (like APQuest), it's worth trying CachedRuleBuilderWorld.
+# If your world exclusively uses Rule Builder rules (like WormingFromHome), it's worth trying CachedRuleBuilderWorld.
 # CachedRuleBuilderWorld is a subclass of World that has a bunch of caching magic to make rules faster.
 # Just have your world class subclass CachedRuleBuilderWorld instead of World:
-#   class APQuestWorld(CachedRuleBuilderWorld): ...
+#   class WormingFromHomeWorld(CachedRuleBuilderWorld): ...
 # This may speed up your world, or it may make it slower.
 # The exact factors are complex and not well understood, but there is no harm in trying it.
 # Generate a few seeds and see if there is a noticeable difference!
-# If you're wondering, author has checked: APQuest is too simple to see any benefits, so we'll stick with "World".
+# If you're wondering, author has checked: WormingFromHome is too simple to see any benefits, so we'll stick with "World".

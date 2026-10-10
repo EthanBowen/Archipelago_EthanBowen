@@ -24,7 +24,7 @@ from . import options as apquest_options  # rename due to a name conflict with W
 # It is recommended that you read these in that specific order, then come back to the world class.
 class WormingFromHomeWorld(World):
     """
-    Worming From Home
+    Worming from Home
     Good games don't need more than six checks.
     """
 

@@ -5,8 +5,8 @@ from worlds.LauncherComponents import Component, Type, components, launch
 # (Note: Some worlds distribute their clients as separate, standalone programs,
 #  while others include them in the apworld itself. Standalone clients are not an apworld component,
 #  although you could make a component that e.g. auto-installs and launches the standalone client for the user.)
-# APQuest has a Python client inside the apworld that contains the entire game. This is a component.
-# APQuest will not teach you how to make a client or any other type of component.
+# WormingFromHome has a Python client inside the apworld that contains the entire game. This is a component.
+# WormingFromHome will not teach you how to make a client or any other type of component.
 # However, let's quickly talk about how you register a component to be launchable from the Archipelago Launcher.
 # First, you'll need a function that takes a list of args (e.g. from the command line) that launches your component.
 def run_client(*args: str) -> None:
@@ -16,7 +16,7 @@ def run_client(*args: str) -> None:
     # Also, if your component has its own lifecycle, like if it is its own window that can be interacted with,
     # you should use the LauncherComponents.launch helper (which itself calls launch_subprocess).
     # This will create a subprocess for your component, launching it in a separate window from the Archipelago Launcher.
-    launch(launch_ap_quest_client, name="APQuest Client", args=args)
+    launch(launch_ap_quest_client, name="Worming from Home Client", args=args)
 
 
 # You then add this function as a component by appending a Component instance to LauncherComponents.components.
@@ -24,9 +24,9 @@ def run_client(*args: str) -> None:
 # and when the user clicks on the "Open" button, your function will be run.
 components.append(
     Component(
-        "APQuest Client",
+        "Worming from Home Client",
         func=run_client,
-        game_name="APQuest",
+        game_name="Worming from Home",
         component_type=Type.CLIENT,
         supports_uri=True,
     )
@@ -40,9 +40,9 @@ components.append(
 # This uri contains the room url + port, the slot name, and the password.
 # You can process this uri arg to automatically connect the user to their slot without having to type anything.
 
-# As you can see above, the APQuest client has both of these parameters set.
-# This means a user can click on the slot name of an APQuest slot on WebHost,
-# then click "APQuest Client" instead of "Text Client" in the Launcher popup, and after a few seconds,
+# As you can see above, the WormingFromHome client has both of these parameters set.
+# This means a user can click on the slot name of an WormingFromHome slot on WebHost,
+# then click "WormingFromHome Client" instead of "Text Client" in the Launcher popup, and after a few seconds,
 # they will be connected and playing the game without having to touch their keyboard once.
 
 # Since a Component is just Python code, this doesn't just work with CommonClient-derived clients.
